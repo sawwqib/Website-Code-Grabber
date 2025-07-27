@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Website Code Grabber</title>
+
+  <!-- Prism.js for syntax highlighting -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.css" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #f7fff9;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #e4fbea;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 128, 0, 0.1);
+    }
+
+    header h1 {
+      color: #2e7d32;
+      font-size: 2rem;
+    }
+
+    main {
+      flex: 1;
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #81c784;
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: #fff;
+      color: #333;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #4caf50;
+      box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #4caf50;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    pre {
+      background: #272822;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #c8e6c9;
+      overflow-x: auto;
+      max-height: 60vh;
+    }
+
+    footer {
+      background-color: #e4fbea;
+      padding: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      box-shadow: 0 -2px 8px rgba(0, 128, 0, 0.1);
+    }
+
+    @media (max-width: 600px) {
+      .button-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🌐 Website Code Grabber</h1>
+  </header>
+
+  <main>
+    <div class="form-group">
+      <label for="websiteName"><strong>Enter Website URL:</strong></label>
+      <input type="text" id="websiteName" placeholder="https://example.com" />
+    </div>
+
+    <div class="button-group">
+      <button id="GetCode">Get Source Code</button>
+      <button id="copyBtn">Copy Code</button>
+    </div>
+
+    <div class="form-group" style="margin-top: 30px;">
+      <label for="codeDisplay"><strong>Website Source Code:</strong></label>
+      <pre><code id="codeDisplay" class="language-markup">// Source code will appear here...</code></pre>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Code Grabber | Built with 💚 by Saqib
+  </footer>
+
+  <!-- Prism.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+  <script>
+    const codeDisplay = document.getElementById("codeDisplay");
+    const websiteName = document.getElementById("websiteName");
+    const GetCode = document.getElementById("GetCode");
+    const copyBtn = document.getElementById("copyBtn");
+
+    GetCode.addEventListener("click", () => {
+      const url = websiteName.value.trim();
+      if (!url) {
+        alert("Please enter a valid website URL.");
+        return;
+      }
+
+      codeDisplay.textContent = "Fetching source code...";
+      Prism.highlightElement(codeDisplay);
+
+      fetch("https://api.codetabs.com/v1/proxy?quest=" + url)
+        .then((res) => res.text())
+        .then((data) => {
+          codeDisplay.textContent = data;
+          Prism.highlightElement(codeDisplay);
+        })
+        .catch((err) => {
+          codeDisplay.textContent = "❌ Error fetching source code.";
+          Prism.highlightElement(codeDisplay);
+        });
+    });
+
+    copyBtn.addEventListener("click", () => {
+      const range = document.createRange();
+      range.selectNode(codeDisplay);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand("copy");
+      window.getSelection().removeAllRanges();
+      alert("Code copied to clipboard!");
+    });
+  </script>
+
+</body>
+</html>
